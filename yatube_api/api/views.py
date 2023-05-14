@@ -1,9 +1,11 @@
-from rest_framework import viewsets, permissions
 from django.shortcuts import get_object_or_404
+from rest_framework import viewsets, permissions, filters
+from rest_framework.pagination import LimitOffsetPagination
 
-from posts.models import Group, Post, Follow
-from .serializers import GroupSerializer, PostSerializer, CommentSerializer, FollowSerializer
-from .permissions import IsAuthorOrReadOnlyAuthPermission
+from posts.models import Group, Post
+from .serializers import (
+    GroupSerializer, PostSerializer, CommentSerializer, FollowSerializer)
+from .permissions import IsAuthorOrReadOnlyPermission
 
 
 class GroupViewSet(viewsets.ReadOnlyModelViewSet):
@@ -14,7 +16,9 @@ class GroupViewSet(viewsets.ReadOnlyModelViewSet):
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    permission_classes = (IsAuthorOrReadOnlyAuthPermission,)
+    permission_classes = (
+        IsAuthorOrReadOnlyPermission, permissions.IsAuthenticatedOrReadOnly)
+    pagination_class = LimitOffsetPagination
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
@@ -22,7 +26,8 @@ class PostViewSet(viewsets.ModelViewSet):
 
 class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
-    permission_classes = (IsAuthorOrReadOnlyAuthPermission,)
+    permission_classes = (
+        IsAuthorOrReadOnlyPermission, permissions.IsAuthenticatedOrReadOnly)
 
     def get_queryset(self):
         post_id = self.kwargs.get('post_id')
@@ -36,6 +41,14 @@ class CommentViewSet(viewsets.ModelViewSet):
 
 
 class FollowViewSet(viewsets.ModelViewSet):
-    queryset = Follow.objects.all()
     serializer_class = FollowSerializer
     permission_classes = (permissions.IsAuthenticated,)
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('following__username',)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    def get_queryset(self):
+        user = self.request.user
+        return user.follower.all()

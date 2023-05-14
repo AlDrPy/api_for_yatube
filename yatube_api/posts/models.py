@@ -51,7 +51,7 @@ class Post(models.Model):
         upload_to='posts/', null=True, blank=True)
 
     def __str__(self):
-        return self.text[:LEN_OBJ_NAME]
+        return self.text[:LEN_OBJ_NAME] + '...'
 
     class Meta:
         ordering = ['-pub_date']
@@ -82,6 +82,9 @@ class Comment(models.Model):
         db_index=True
     )
 
+    def __str__(self):
+        return self.text[:LEN_OBJ_NAME] + '...'
+
     class Meta:
         verbose_name = 'Коммент'
         verbose_name_plural = 'Комменты'
@@ -110,9 +113,9 @@ class Follow(models.Model):
     class Meta:
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
-        constraints = [
-            models.UniqueConstraint(
-                fields=['user', 'following'],
-                name='unique_subscription'
-            )
-        ]
+        # constraints = [
+        #     models.UniqueConstraint(
+        #         fields=['user', 'following'],
+        #         name='unique_subscription'
+        #     )
+        # ]
