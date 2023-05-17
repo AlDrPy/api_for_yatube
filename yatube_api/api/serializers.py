@@ -1,4 +1,3 @@
-from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from rest_framework.relations import SlugRelatedField
 from rest_framework.validators import UniqueTogetherValidator
@@ -56,7 +55,6 @@ class FollowSerializer(serializers.ModelSerializer):
 
     def validate_following(self, value):
         user = self.context['request'].user
-        following = get_object_or_404(User, username=value)
-        if user == following:
+        if value.username == user.username:
             raise serializers.ValidationError('Нельзя подписываться на себя!')
         return value
