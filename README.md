@@ -55,6 +55,12 @@ pip install -r requirements.txt
 python manage.py migrate
 ```
 
+- Создать суперпользователя для проверки работы админ-зоны:
+
+```
+python manage.py createsuperuser
+```
+
 - Запустить проект на локальной машине:
 
 ```
