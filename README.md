@@ -33,17 +33,10 @@ cd api_for_yatube/
 
 - Cоздать виртуальное окружение:
 
-```
-python -m venv venv
-```
-или
-```
-python3 -m venv venv
-```
+```python -m venv venv``` или ```python3 -m venv venv```
 и затем активировать его:
-```
-source venv/bin/activate
-```
+```source venv/Scripts/activate``` для Windows
+либо ```source venv/bin/activate``` для Linux
 
 - Установить зависимости из файла requirements.txt:
 
@@ -55,22 +48,22 @@ python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-- Выполнить миграции:
+- Перейти в директорию с файлом manage.py ```cd yatube_api/```
+  и выполнить миграции:
 
 ```
 python manage.py migrate
 ```
 
-- Запустить проект:
-
-```
-cd api_for_yatube/yatube_api/
-```
+- Запустить проект на локальной машине:
 
 ```
 python manage.py runserver
 ```
 - Готово! Теперь можно подключить своё приложение или протестировать работу API с помощью Postman.
+
+Браузерный интерфейс API будет доступен по адресу http://127.0.0.1:8000/api/v1/
+Документация размещена по адресу http://127.0.0.1:8000/redoc/
 
 ### Авторы
 _AlDrPy  https://github.com/AlDrPy_
